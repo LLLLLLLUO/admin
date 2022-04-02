@@ -6,10 +6,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './permission.js';
 
-console.log(process.env)
-
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.component('cmpLine', () => import('./components/common/mianbao.vue'))
 
 new Vue({
   router,

@@ -11,19 +11,45 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/user/login.vue'),
+    component: () => import('../views/user/login.vue'),
   },
   {
     path: '/home',
     name: 'home',
-    component: () => import(/* webpackChunkName: "home" */ '../views/home.vue'),
+    component: () => import('../views/Home.vue'),
+    redirect: '/welcome',
     children: [
-
+      {
+        path: '/welcome',
+        name: 'welcome',
+        component: () => import('../views/welcome.vue'),
+      },
+      {
+        path: '/member',
+        name: 'member',
+        component: () => import('../views/member/index.vue')
+      },
+      {
+        path: '/supplier',
+        name: 'supplier',
+        component: () => import('../views/supplier/index.vue')
+      },
+      {
+        path: '/goods',
+        name: 'goods',
+        component: () => import('../views/goods/index.vue')
+      },
+      {
+        path: '/user',
+        name: 'user',
+        component: () => import('../views/user/index.vue')
+      },
     ]
   },
 ];
 
 const router = new VueRouter({
+  mode: 'hash',
   routes,
 });
 

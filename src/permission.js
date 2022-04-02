@@ -1,4 +1,4 @@
-import router from './router/index.js';
+import router from './router';
 
 router.beforeEach((to, form, next) => {
   let token = sessionStorage.token;
@@ -8,7 +8,6 @@ router.beforeEach((to, form, next) => {
     } else {
       next();
     }
-    next()
   } else {
     if (to.path === '/login') {
       next();
@@ -17,3 +16,5 @@ router.beforeEach((to, form, next) => {
     }
   }
 });
+
+// export default router

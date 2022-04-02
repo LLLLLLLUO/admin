@@ -63,5 +63,9 @@ function getMember({ currentPage, pageSize }) {
 }
 
 export {
-
+  getMember,
+  editMember,
+  getMemberInfo,
+  delMember,
+  addMember
 }
