@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { userLogin } from '../api/user/index.js';
-import { getMember, delMember, addMember } from '../api/member/index.js';
+import { getMember, delMember, addMember, getMemberInfo, editMember } from '../api/member/index.js';
 
 Vue.use(Vuex);
 
@@ -55,6 +55,39 @@ export default new Vuex.Store({
         } catch (error) {
           console.log(error);
           reject(error);
+        }
+      })
+    },
+    searchMember: function ({ commit }, form) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let { data } = await getMember(form)
+          resolve(data);
+        } catch (error) {
+          console.log(error);
+          reject(error)
+        }
+      })
+    },
+    findMember: function ({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let { data } = await getMemberInfo(id);
+          resolve(data);
+        } catch (error) {
+          console.log(error);
+          reject(error)
+        }
+      })
+    },
+    upEditMember: function ({ commit }, obj) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let { data } = await editMember(obj.id, obj.data);
+          resolve(data);
+        } catch (error) {
+          console.log(error);
+          reject(error)
         }
       })
     }

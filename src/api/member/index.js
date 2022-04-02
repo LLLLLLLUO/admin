@@ -43,10 +43,10 @@ function getMemberInfo(id) {
  * @param {*} data
  * @returns
  */
-function editMember(data) {
+function editMember(id, data) {
   return http({
     url: '/member/' + id,
-    method: 'put',
+    method: 'PUT',
     data
   })
 };
@@ -56,10 +56,16 @@ function editMember(data) {
  * @param {*} param0
  * @returns
  */
-function getMember({ currentPage, pageSize }) {
+function getMember({ currentPage, pageSize, cardNum, name, payType, birthday }) {
   return http({
     url: `/member/list/search/${currentPage}/${pageSize}`,
-    method: 'post'
+    method: 'post',
+    data: {
+      cardNum,
+      name,
+      payType,
+      birthday
+    }
   })
 }
 
