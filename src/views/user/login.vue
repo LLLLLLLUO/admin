@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { setToken } from '../../utils/auth.js';
 export default {
   data() {
     return {
@@ -40,9 +41,10 @@ export default {
           let data = await this.$store.dispatch('userLogin', this.loginForm);
           console.log(data);
           if (data.code === 1) {
-            sessionStorage.token = "Bearer " + data.data.token;
+            setToken("Bearer " + data.data.token)
+            // sessionStorage.token = "Bearer " + data.data.token;
             this.$router.push('/home');
-            this.$message.success('登录成功')
+            this.$message.success('登录成功');
           }
         }
       })

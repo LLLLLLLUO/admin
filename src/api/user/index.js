@@ -17,7 +17,7 @@ function userLogin(data) {
  * 退出登录
  * @returns
  */
-function userLogou() {
+function userLogout() {
   return http({
     url: '/admin/logout',
     method: 'post'
@@ -50,7 +50,7 @@ function registerUser(data) {
 
 export {
   userLogin,
-  userLogou,
+  userLogout,
   getUserInfo,
   registerUser
 }

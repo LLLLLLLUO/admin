@@ -5,7 +5,7 @@
         <h2>山本，我囸你仙人</h2>
         <el-dropdown trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
-            下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+            {{ userName || '请登录' }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="editPass">修改密码</el-dropdown-item>
@@ -54,17 +54,51 @@
 </template>
 
 <script>
+import { userLogout, getUserInfo } from '../api/user/index.js';
+import { setUserInfo, getUserInfos, removeUserInfo, setToken, getToken, removeToken } from '../utils/auth.js';
+import { mapState } from 'vuex';
 export default {
   data() {
     return {
 
     }
   },
+  created() {
+    this.getUser()
+  },
   methods: {
-    handleCommand (value) {
+    async handleCommand (value) {
       console.log(value);
+      switch (value) {
+        case 'editPass':
+          this.$message(value)
+          break;
+        case 'logout':
+          let { data } = await userLogout();
+          console.log(data);
+          if (data.error_code == 0) {
+            removeUserInfo();
+            removeToken();
+            this.$message.success(data.msg);
+            this.$router.push('/login');
+          }
+          break;
+      }
+    },
+    async getUser() {
+
+      let { data } = await getUserInfo();
+      console.log(data);
+      if (data.error_code == 0) {
+        // let user = getUserInfos();
+        setUserInfo(data.msg);
+        this.$store.dispatch('getUserName', data.msg.username)
+      }
     }
   },
+  computed: {
+    ...mapState(['userName'])
+  }
 }
 </script>
 

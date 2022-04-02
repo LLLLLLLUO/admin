@@ -28,7 +28,7 @@
       <div><el-button type="primary" @click="addMemberShow">新增</el-button></div>
       <div><el-button>重置</el-button></div>
     </div>
-    <div class="dataList">
+    <div class="dataList" style="margin: 15px 0 0 0;">
       <el-table :data="dataList" border>
         <el-table-column type="index" label="序号"></el-table-column>
         <el-table-column label="会员卡号" prop="cardNum"></el-table-column>
@@ -58,7 +58,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div>
+      <div style="margin: 15px 0 0 0;">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
