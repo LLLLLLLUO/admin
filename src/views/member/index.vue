@@ -2,27 +2,31 @@
   <div class="memberBox">
     <cmp-line title="会员管理" style="margin-bottom: 15px;" />
     <div class="searchBox">
-      <el-input type="text" style="width: 150px;" placeholder="会员卡号" />
-      <el-input type="text" style="width: 150px;" placeholder="会员名字" />
-      <el-select v-model="searchForm.payType" placeholder="请选择" style="width: 150px;">
-        <el-option
-          v-for="item in payType"
-          :key="item.type"
-          :label="item.name"
-          :value="item.type">
-          <span>{{ item.name }}</span>
-        </el-option>
-      </el-select>
-      <div class="block">
-        <el-date-picker
-          v-model="searchForm.birthday"
-          type="date"
-          placeholder="选择日期">
-        </el-date-picker>
+      <div><el-input type="text" style="width: 150px;" placeholder="会员卡号" /></div>
+      <div><el-input type="text" style="width: 150px;" placeholder="会员名字" /></div>
+      <div>
+        <el-select v-model="searchForm.payType" placeholder="请选择" style="width: 150px;">
+          <el-option
+            v-for="item in payType"
+            :key="item.type"
+            :label="item.name"
+            :value="item.type">
+            <span>{{ item.name }}</span>
+          </el-option>
+        </el-select>
       </div>
-      <el-button type="primary">查询</el-button>
-      <el-button type="primary" @click="addMember">新增</el-button>
-      <el-button>重置</el-button>
+      <div>
+        <div class="block">
+          <el-date-picker
+            v-model="searchForm.birthday"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+      </div>
+      <div><el-button type="primary">查询</el-button></div>
+      <div><el-button type="primary" @click="addMemberShow">新增</el-button></div>
+      <div><el-button>重置</el-button></div>
     </div>
     <div class="dataList">
       <el-table :data="dataList" border>
@@ -40,7 +44,7 @@
         <el-table-column label="支付类型" prop="payType">
           <template slot-scope="scope">
             <div>
-              {{ scope.row.payType }}
+              {{ scope.row.payType | toPay }}
             </div>
           </template>
         </el-table-column>
@@ -54,6 +58,52 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-dialog title="添加会员" :visible.sync="addFormVisible">
+        <el-form :model="addForm" ref="addForm" :rules="addFormRules">
+          <el-form-item label="会员卡号" prop="cardNum" label-width="90px">
+            <el-input v-model="addForm.cardNum" ></el-input>
+          </el-form-item>
+          <el-form-item label="会员姓名" prop="name" label-width="90px">
+            <el-input v-model="addForm.name" ></el-input>
+          </el-form-item>
+          <el-form-item label="会员生日" label-width="90px">
+            <!-- <el-input v-model="addForm.birthday" ></el-input> -->
+            <el-date-picker
+            value-format="yyyy-MM-dd"
+              v-model="addForm.birthday"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="手机号码" label-width="90px">
+            <el-input v-model="addForm.phone" ></el-input>
+          </el-form-item>
+          <el-form-item label="开卡金额" label-width="90px">
+            <el-input v-model="addForm.money" ></el-input>
+          </el-form-item>
+          <el-form-item label="可用积分" label-width="90px">
+            <el-input v-model="addForm.integral" ></el-input>
+          </el-form-item>
+          <el-form-item label="支付类型" prop="payType" label-width="90px">
+            <!-- <el-input v-model="addForm.payType" ></el-input> -->
+            <el-select v-model="addForm.payType" placeholder="请选择支付方式">
+              <el-option
+                v-for="item in payType"
+                :key="item.type"
+                :label="item.name"
+                :value="item.type">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="会员地址" label-width="90px">
+            <el-input type="textarea" v-model="addForm.address" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addMember">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -102,7 +152,15 @@ export default {
         phone: ""
       },
       dataList: [],
-      total: 0
+      total: 0,
+      addFormVisible: false,
+      addFormRules: {
+        cardNum: [{required: true, message: '请输入会员卡号', trigger: 'blur'},
+        {min: 2, max: 12, message: '会员卡号在2~12位之间', trigger: 'blur'}],
+        name: [{required: true, message: '请输入会员姓名', trigger: 'blur'},
+        {min: 2, max: 12, trigger: 'blur'}],
+        payType: [{required: true, message: '请选择支付类型', trigger: 'blur'}]
+      }
     }
   },
   created() {
@@ -111,11 +169,9 @@ export default {
   methods: {
     async getMember () {
       let data = await this.$store.dispatch('getMember', this.searchForm);
-      console.log(data);
       if (data.error_code == 0) {
         this.dataList = data.msg.rows;
         this.total = data.msg.count;
-        console.log(this.dataList);
       };
     },
     editMember (row) {
@@ -129,15 +185,29 @@ export default {
         this.getMember();
       }
     },
+    async addMemberShow () {
+      this.addFormVisible = true
+    },
     async addMember () {
-      console.log(this.addForm);
+      this.$refs.addForm.validate(async valid => {
+        console.log(valid);
+        // console.log(this.addForm);
+        if (valid) {
+          let { error_code } = await this.$store.dispatch('addMember', this.addForm);
+          if (error_code == 0) {
+            this.$message.success('添加成功');
+            this.getMember();
+            this.$refs.addForm.resetField();
+            this.addFormVisible = false;
+          }
+        }
+      })
     }
   },
   filters: {
     toPay (val) {
-      // console.log(val);
       let type = payType.find(item => item.type == val);
-      return type.name || ''
+      return type.name || val
     }
   }
 }
@@ -147,10 +217,9 @@ export default {
   .memberBox {
     .searchBox {
       display: flex;
-      justify-content: space-around;
       flex-wrap: wrap;
-      .el-input {
-
+      div {
+        margin-right: 10px;
       }
     }
   }

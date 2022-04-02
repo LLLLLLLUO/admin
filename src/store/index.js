@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { userLogin } from '../api/user/index.js';
-import { getMember, delMember } from '../api/member/index.js';
+import { getMember, delMember, addMember } from '../api/member/index.js';
 
 Vue.use(Vuex);
 
@@ -40,6 +40,17 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           let { data } = await delMember(id);
+          resolve(data);
+        } catch (error) {
+          console.log(error);
+          reject(error);
+        }
+      })
+    },
+    addMember: function ({ commit }, form) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let { data } = await addMember(form);
           resolve(data);
         } catch (error) {
           console.log(error);

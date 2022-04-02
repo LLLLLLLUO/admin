@@ -6,8 +6,9 @@ import http from '../../utils/index.js';
  * @returns
  */
 function addMember(data) {
+  console.log(data);
   return http({
-    url: '',
+    url: '/member/',
     method: 'post',
     data
   })
