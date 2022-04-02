@@ -7,9 +7,9 @@ module.exports = {
     host: '127.0.0.1',
     proxy: {
       [process.env.VUE_APP_BASE_URL]: {
-        target: process.env.VUE_APP_SERVE_URL,
-        changeOrigin: true,
-        pathRewrite: {
+        'target': process.env.VUE_APP_SERVE_URL,
+        'changeOrigin': true,
+        'pathRewrite': {
           [`^${process.env.VUE_APP_BASE_URL}`]: ''
         }
       }
